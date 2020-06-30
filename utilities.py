@@ -13,6 +13,7 @@ import logging
 from datetime import datetime
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
+from numpyencoder import NumpyEncoder
 
 import sys
 
@@ -109,4 +110,4 @@ def load(name):
 
 def save_json(obj,name):
 	with open(name, 'w') as outfile:
-		json.dump(obj, outfile, indent=4, sort_keys=True)
+		json.dump(obj, outfile, indent=4, sort_keys=True, cls=NumpyEncoder)

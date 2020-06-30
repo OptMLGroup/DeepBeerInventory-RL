@@ -28,7 +28,7 @@ class clBeerGame(object):
 		self.resultTest	= []
 		self.runnerMidlResults = []		# stores the results to use in runner comparisons
 		self.runnerFinlResults = []		# stores the results to use in runner comparisons
-		self.middleTestResult = []		# stores the whole middle results of optm, frmu, and random to avoid doing same tests multiple of times.
+		self.middleTestResult = []		# stores the whole middle results of bs, Strm, and random to avoid doing same tests multiple of times.
 		self.runNumber = 0		# the runNumber which is used when use runner
 		self.strNum = 0			# the runNumber which is used when use runner		
 		
@@ -93,10 +93,10 @@ class clBeerGame(object):
 		
 		# get action for training run
 		if self.playType == "train":
-			if  self.players[k].compTypeTrain == "dnn":
+			if  self.players[k].compTypeTrain == "srdqn":
 				self.players[k].action = np.zeros(self.config.actionListLen)
 				self.players[k].action = self.players[k].brain.getDNNAction(self.playType)
-			elif self.players[k].compTypeTrain == "frmu":
+			elif self.players[k].compTypeTrain == "Strm":
 				self.players[k].action = np.zeros(self.config.actionListLenOpt)
 				self.players[k].action[np.argmin(np.abs(np.array(self.config.actionListOpt)\
 									-max(0,round(self.players[k].AO[self.curTime] +\
@@ -106,31 +106,31 @@ class clBeerGame(object):
 				self.players[k].action = np.zeros(self.config.actionListLen)
 				a = np.random.randint(self.config.actionListLen)
 				self.players[k].action[a] = 1
-			elif self.players[k].compTypeTrain == "optm":	
+			elif self.players[k].compTypeTrain == "bs":	
 				self.players[k].action = np.zeros(self.config.actionListLenOpt)
 				if self.config.demandDistribution == 2:
 					if self.curTime   and self.config.use_initial_BS <= 4:
 						self.players[k].action [np.argmin(np.abs(np.array(self.config.actionListOpt)-\
-								max(0,(self.players[k].init_optmlBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
+								max(0,(self.players[k].int_bslBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
 					else: 
 						self.players[k].action [np.argmin(np.abs(np.array(self.config.actionListOpt)-\
-								max(0,(self.players[k].optmlBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
+								max(0,(self.players[k].bsBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
 				else:
 					self.players[k].action [np.argmin(np.abs(np.array(self.config.actionListOpt)-\
-								max(0,(self.players[k].optmlBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
+								max(0,(self.players[k].bsBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
 			else:
 				# not a valid player is defined.
 				raise Exception('The player type is not defined or it is not a valid type.!')
 
 		# get action for test runs
 		elif self.playType == "test":
-			if  self.players[k].compTypeTest == "dnn":
+			if  self.players[k].compTypeTest == "srdqn":
 				self.players[k].action = np.zeros(self.config.actionListLen)
 				if self.config.ifPlaySavedData:
 					self.players[k].action[int(self.loaded_dqn_actions[self.curTime])] = 1
 				else:
 					self.players[k].action = self.players[k].brain.getDNNAction(self.playType)
-			elif self.players[k].compTypeTest == "frmu":
+			elif self.players[k].compTypeTest == "Strm":
 				self.players[k].action = np.zeros(self.config.actionListLenOpt)
 
 				self.players[k].action[np.argmin(np.abs(np.array(self.config.actionListOpt)-\
@@ -141,23 +141,23 @@ class clBeerGame(object):
 				self.players[k].action = np.zeros(self.config.actionListLen)
 				a = np.random.randint(self.config.actionListLen)
 				self.players[k].action[a] = 1
-			elif self.players[k].compTypeTest == "optm":
+			elif self.players[k].compTypeTest == "bs":
 				self.players[k].action = np.zeros(self.config.actionListLenOpt)
 
 				if self.config.demandDistribution == 2:
 					if self.curTime   and self.config.use_initial_BS <= 4:
 						self.players[k].action [np.argmin(np.abs(np.array(self.config.actionListOpt)-\
-								max(0,(self.players[k].init_optmlBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
+								max(0,(self.players[k].int_bslBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
 					else: 
 						self.players[k].action [np.argmin(np.abs(np.array(self.config.actionListOpt)-\
-								max(0,(self.players[k].optmlBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
+								max(0,(self.players[k].bsBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
 				else:
 					self.players[k].action [np.argmin(np.abs(np.array(self.config.actionListOpt)-\
-								max(0,(self.players[k].optmlBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
+								max(0,(self.players[k].bsBaseStock - (self.players[k].IL + self.players[k].OO - self.players[k].AO[self.curTime]))) ))] = 1	
 			else:
 				# not a valid player is defined.
 				raise Exception('The player type is not defined or it is not a valid type.!')
-              	# print(self.curTime, self.players[k].agentNum, "IL", self.players[k].IL, "OO", self.players[k].OO, "Op", self.players[k].optmlBaseStock, self.players[k].optmlBaseStock - (self.players[k].IL + self.players[k].OO))
+              	# print(self.curTime, self.players[k].agentNum, "IL", self.players[k].IL, "OO", self.players[k].OO, "Op", self.players[k].bsBaseStock, self.players[k].bsBaseStock - (self.players[k].IL + self.players[k].OO))
 	
 	# next action
 	def next(self):
@@ -210,14 +210,14 @@ class clBeerGame(object):
 		for k in range(0,self.config.NoAgent): 
 			self.getAction(k)
 			
-			self.players[k].dnnBaseStock += [self.players[k].actionValue( \
+			self.players[k].srdqnBaseStock += [self.players[k].actionValue( \
 				self.curTime, self.playType) + self.players[k].IL + self.players[k].OO]
 			
 			# update hist for the plots	
 			self.players[k].hist += [[self.curTime,self.players[k].IL, self.players[k].OO,\
-						self.players[k].actionValue(self.curTime,self.playType),self.players[k].curReward, self.players[k].dnnBaseStock[-1]]]
+						self.players[k].actionValue(self.curTime,self.playType),self.players[k].curReward, self.players[k].srdqnBaseStock[-1]]]
 
-			if (self.players[k].compTypeTrain == "dnn" and self.playType == "train") or (self.players[k].compTypeTest == "dnn" and self.playType == "test"):
+			if (self.players[k].compTypeTrain == "srdqn" and self.playType == "train") or (self.players[k].compTypeTest == "srdqn" and self.playType == "test"):
 				self.players[k].hist2 += [[self.curTime,self.players[k].IL, self.players[k].OO, self.players[k].AO[self.curTime], self.players[k].AS[self.curTime], \
 						self.players[k].actionValue(self.curTime,self.playType), self.players[k].curReward, \
 						self.config.actionList[np.argmax(self.players[k].action)]]]
@@ -243,7 +243,7 @@ class clBeerGame(object):
 
 
 			for k in range(0,self.config.NoAgent):					
-				if (self.players[k].compTypeTrain == "dnn" and playType == "train") or (self.players[k].compTypeTest == "dnn" and playType == "test"):
+				if (self.players[k].compTypeTrain == "srdqn" and playType == "train") or (self.players[k].compTypeTest == "srdqn" and playType == "test"):
 					# control the learner agent 
 
 					self.players[k].brain.train(self.players[k].nextObservation,self.players[k].action, \
@@ -292,26 +292,26 @@ class clBeerGame(object):
 				# S', set the base stock values into each agent.
 				for k in range(self.config.NoAgent):
 					if k == 0:
-						self.players[k].optmlBaseStock = calculations[6][k]
+						self.players[k].bsBaseStock = calculations[6][k]
 						
 					else:
-						self.players[k].optmlBaseStock = calculations[6][k] - calculations[6][k-1]
-						if self.players[k].optmlBaseStock < 0:
-							self.players[k].optmlBaseStock = 0
+						self.players[k].bsBaseStock = calculations[6][k] - calculations[6][k-1]
+						if self.players[k].bsBaseStock < 0:
+							self.players[k].bsBaseStock = 0
 		elif self.config.NoAgent ==1:				
 			if self.config.demandDistribution==0:
-				self.players[0].optmlBaseStock = np.ceil(self.config.c_h[0]/(self.config.c_h[0]+self.config.c_p[0]+ 0.0))*((self.config.demandUp-self.config.demandLow-1)/2)*self.config.leadRecItemUp
+				self.players[0].bsBaseStock = np.ceil(self.config.c_h[0]/(self.config.c_h[0]+self.config.c_p[0]+ 0.0))*((self.config.demandUp-self.config.demandLow-1)/2)*self.config.leadRecItemUp
 		elif 1 == 1:
 			f = self.config.f
 			f_init = self.config.f_init
 			for k in range(self.config.NoAgent):
-				self.players[k].optmlBaseStock = f[k]
-				self.players[k].init_optmlBaseStock = f_init[k]
+				self.players[k].bsBaseStock = f[k]
+				self.players[k].int_bslBaseStock = f_init[k]
 				
 	def doTestMid(self, demandTs):
 		if self.config.ifPlaySavedData:
 			for c,i in enumerate(self.config.agentTypes):
-				if i == "dnn":
+				if i == "srdqn":
 					dnn_agent = c
 					break
 
@@ -326,18 +326,23 @@ class clBeerGame(object):
 		resultSummary = np.array(self.resultTest).mean(axis=0).tolist()	
 		
 		
+		
+		result_srdqn= ', '.join(map("{:.2f}".format, resultSummary[0])) 
+		result_rand= ', '.join(map("{:.2f}".format, resultSummary[1])) 
+		result_strm= ', '.join(map("{:.2f}".format, resultSummary[2])) 
 		if self.ifOptimalSolExist:
-			print('SUMMARY; {0:s}; ITER= {1:d}; DNN= {2:s}; SUM = {3:2.4f}; RND= {4:s}; SUM = {5:2.4f}; STRM= {6:s}; SUM = {7:2.4f}; BS= {8:s}; SUM = {9:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
-				self.curGame, [round(resultSummary[0][i],2) for i in range(0,self.config.NoAgent)], sum(resultSummary[0]), 
-				[round(resultSummary[1][i],2) for i in range(0,self.config.NoAgent)], sum(resultSummary[1]),
-				[round(resultSummary[2][i],2) for i in range(0,self.config.NoAgent)], sum(resultSummary[2]), 
-				[round(resultSummary[3][i],2) for i in range(0,self.config.NoAgent)], sum(resultSummary[3])))	
+			result_bs= ', '.join(map("{:.2f}".format, resultSummary[3])) 
+			print('SUMMARY; {0:s}; ITER= {1:d}; DNN= [{2:s}]; SUM = {3:2.4f}; RND= [{4:s}]; SUM = {5:2.4f}; STRM= [{6:s}]; SUM = {7:2.4f}; BS= [{8:s}]; SUM = {9:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
+				self.curGame, result_srdqn, sum(resultSummary[0]), 
+				result_rand, sum(resultSummary[1]),
+				result_strm, sum(resultSummary[2]), 
+				result_bs, sum(resultSummary[3])))	
 
 		else:
-			print('SUMMARY; {0:s}; ITER= {1:d}; DNN= {2:s}; SUM = {3:2.4f}; RND= {4:s}; SUM = {5:2.4f}; STRM= {6:s}; SUM = {7:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
-				self.curGame, [round(resultSummary[0][i],2) for i in range(0,self.config.NoAgent)], sum(resultSummary[0]), 
-				[round(resultSummary[1][i],2) for i in range(0,self.config.NoAgent)], sum(resultSummary[1]),
-				[round(resultSummary[2][i],2) for i in range(0,self.config.NoAgent)], sum(resultSummary[2])))
+			print('SUMMARY; {0:s}; ITER= {1:d}; DNN= [{2:s}]; SUM = {3:2.4f}; RND= [{4:s}]; SUM = {5:2.4f}; STRM= [{6:s}]; SUM = {7:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
+				self.curGame, result_srdqn, sum(resultSummary[0]), 
+				result_rand, sum(resultSummary[1]),
+				result_strm, sum(resultSummary[2])))
 		
 		print("=======================================================================================")
 
@@ -353,7 +358,7 @@ class clBeerGame(object):
 		self.demand = demand
 		# use dnn to get output.
 		Rsltdnn,plt = self.tester(self.config.agentTypes ,plt, 'b', 'DQN' ,m)
-		baseStockdata = self.players[0].dnnBaseStock
+		baseStockdata = self.players[0].srdqnBaseStock
 
 		# check some condition to avoid doing same test middle again.
 		if ((self.config.ifSaveFigure) and (self.curGame in range(self.config.saveFigInt[0],self.config.saveFigInt[1]))) \
@@ -363,59 +368,63 @@ class clBeerGame(object):
 			RsltRnd ,plt= self.tester(["rnd","rnd","rnd","rnd"], plt,'y21', 'RAND' ,m)
 							
 			# use formual to get output.
-			RsltFrmu ,plt= self.tester(["frmu","frmu","frmu","frmu"],plt, 'g', 'Strm' ,m)
+			RsltStrm ,plt= self.tester(["Strm","Strm","Strm","Strm"],plt, 'g', 'Strm' ,m)
 
 			# use optimal strategy to get output, if it works.
 			if self.ifOptimalSolExist:
-				if self.config.agentTypes == ["dnn", "frmu","frmu","frmu"]:
-					RsltOptm ,plt= self.tester(["optm","frmu","frmu","frmu"],plt, 'r', 'Strm-BS' ,m)
-				elif self.config.agentTypes == ["frmu", "dnn","frmu","frmu"]:
-					 RsltOptm ,plt= self.tester(["frmu","optm","frmu","frmu"],plt, 'r', 'Strm-BS' ,m)
-				elif self.config.agentTypes == ["frmu", "frmu","dnn","frmu"]:
-					 RsltOptm ,plt= self.tester(["frmu","frmu","optm","frmu"],plt, 'r', 'Strm-BS' ,m)
-				elif self.config.agentTypes == ["frmu", "frmu","frmu","dnn"]:				 
-					 RsltOptm ,plt= self.tester(["frmu","frmu","frmu","optm"],plt, 'r', 'Strm-BS' ,m)
-				elif self.config.agentTypes == ["dnn", "rnd","rnd","rnd"]:
-					RsltOptm ,plt= self.tester(["optm","rnd","rnd","rnd"],plt, 'r', 'RND-BS' ,m)
-				elif self.config.agentTypes == ["rnd", "dnn","rnd","rnd"]:
-					 RsltOptm ,plt= self.tester(["rnd","optm","rnd","rnd"],plt, 'r', 'RND-BS' ,m)
-				elif self.config.agentTypes == ["rnd", "rnd","dnn","rnd"]:
-					 RsltOptm ,plt= self.tester(["rnd","rnd","optm","rnd"],plt, 'r', 'RND-BS' ,m)
-				elif self.config.agentTypes == ["rnd", "rnd","rnd","dnn"]:				 
-					 RsltOptm ,plt= self.tester(["rnd","rnd","rnd","optm"],plt, 'r', 'RND-BS' ,m)
+				if self.config.agentTypes == ["srdqn", "Strm","Strm","Strm"]:
+					Rsltbs ,plt= self.tester(["bs","Strm","Strm","Strm"],plt, 'r', 'Strm-BS' ,m)
+				elif self.config.agentTypes == ["Strm", "srdqn","Strm","Strm"]:
+					 Rsltbs ,plt= self.tester(["Strm","bs","Strm","Strm"],plt, 'r', 'Strm-BS' ,m)
+				elif self.config.agentTypes == ["Strm", "Strm","srdqn","Strm"]:
+					 Rsltbs ,plt= self.tester(["Strm","Strm","bs","Strm"],plt, 'r', 'Strm-BS' ,m)
+				elif self.config.agentTypes == ["Strm", "Strm","Strm","srdqn"]:				 
+					 Rsltbs ,plt= self.tester(["Strm","Strm","Strm","bs"],plt, 'r', 'Strm-BS' ,m)
+				elif self.config.agentTypes == ["srdqn", "rnd","rnd","rnd"]:
+					Rsltbs ,plt= self.tester(["bs","rnd","rnd","rnd"],plt, 'r', 'RND-BS' ,m)
+				elif self.config.agentTypes == ["rnd", "srdqn","rnd","rnd"]:
+					 Rsltbs ,plt= self.tester(["rnd","bs","rnd","rnd"],plt, 'r', 'RND-BS' ,m)
+				elif self.config.agentTypes == ["rnd", "rnd","srdqn","rnd"]:
+					 Rsltbs ,plt= self.tester(["rnd","rnd","bs","rnd"],plt, 'r', 'RND-BS' ,m)
+				elif self.config.agentTypes == ["rnd", "rnd","rnd","srdqn"]:				 
+					 Rsltbs ,plt= self.tester(["rnd","rnd","rnd","bs"],plt, 'r', 'RND-BS' ,m)
 				else:
-					RsltOptm ,plt= self.tester(["optm","optm","optm","optm"],plt, 'r', 'BS' ,m)			
+					Rsltbs ,plt= self.tester(["bs","bs","bs","bs"],plt, 'r', 'BS' ,m)			
 			# hold the results of the optimal solution
-				self.middleTestResult += [[RsltRnd,RsltFrmu,RsltOptm]]
+				self.middleTestResult += [[RsltRnd,RsltStrm,Rsltbs]]
 			else:
-				self.middleTestResult += [[RsltRnd,RsltFrmu]]
+				self.middleTestResult += [[RsltRnd,RsltStrm]]
 			
 		else:
 			# return the obtained results into their lists
 			RsltRnd = self.middleTestResult[m][0]
-			RsltFrmu = self.middleTestResult[m][1]
+			RsltStrm = self.middleTestResult[m][1]
 			if self.ifOptimalSolExist:
-				RsltOptm = self.middleTestResult[m][2]
+				Rsltbs = self.middleTestResult[m][2]
 			
 		# save the figure
 		if self.config.ifSaveFigure and (self.curGame in range(self.config.saveFigInt[0],self.config.saveFigInt[1])):
-			savePlot(self.players, self.curGame, Rsltdnn  ,RsltFrmu, RsltOptm , self.config, m)
+			savePlot(self.players, self.curGame, Rsltdnn  ,RsltStrm, Rsltbs , self.config, m)
 				
+		result_srdqn = ', '.join(map("{:.2f}".format, Rsltdnn)) 
+		result_rand = ', '.join(map("{:.2f}".format, RsltRnd)) 
+		result_strm = ', '.join(map("{:.2f}".format, RsltStrm)) 
 		if self.ifOptimalSolExist:
-			print('output; {0:s}; Iter= {1:s}; dnn= {2:s}; sum = {3:2.4f}; rnd= {4:s}; sum = {5:2.4f}; frmu= {6:s}; sum = {7:2.4f}; BS= {8:s}; sum = {9:2.4f}'.format(
-			strftime("%Y-%m-%d %H:%M:%S", gmtime()) , str(str(self.curGame)+"-"+str(m)), [round(Rsltdnn[i],2) for i in range(0,self.config.NoAgent)], sum(Rsltdnn), 
-			[round(RsltRnd[i],2) for i in range(0,self.config.NoAgent)], sum(RsltRnd),
-			[round(RsltFrmu[i],2) for i in range(0,self.config.NoAgent)], sum(RsltFrmu), 
-			[round(RsltOptm[i],2) for i in range(0,self.config.NoAgent)], sum(RsltOptm)))	
-			self.resultTest +=  [[Rsltdnn,RsltRnd,RsltFrmu,RsltOptm]]
+			result_bs = ', '.join(map("{:.2f}".format, Rsltbs)) 
+			print('output; {0:s}; Iter= {1:s}; dnn= [{2:s}]; sum = {3:2.4f}; rnd= [{4:s}]; sum = {5:2.4f}; Strm= [{6:s}]; sum = {7:2.4f}; BS= [{8:s}]; sum = {9:2.4f}'.format(
+			strftime("%Y-%m-%d %H:%M:%S", gmtime()) , str(str(self.curGame)+"-"+str(m)), result_srdqn , sum(Rsltdnn), 
+			result_rand, sum(RsltRnd),
+			result_strm, sum(RsltStrm), 
+			result_bs, sum(Rsltbs)))	
+			self.resultTest +=  [[Rsltdnn,RsltRnd,RsltStrm,Rsltbs]]
 
 		else:
-			print('output; {0:s}; Iter= {1:s}; dnn= {2:s}; sum = {3:2.4f}; rnd= {4:s}; sum = {5:2.4f}; frmu= {6:s}; sum = {7:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
-			str(str(self.curGame)+"-"+str(m)), [round(Rsltdnn[i],2) for i in range(0,self.config.NoAgent)], sum(Rsltdnn), 
-			[round(RsltRnd[i],2) for i in range(0,self.config.NoAgent)], sum(RsltRnd),
-			[round(RsltFrmu[i],2) for i in range(0,self.config.NoAgent)], sum(RsltFrmu)))	
+			print('output; {0:s}; Iter= {1:s}; dnn= [{2:s}]; sum = {3:2.4f}; rnd= [{4:s}]; sum = {5:2.4f}; Strm= [{6:s}]; sum = {7:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
+			str(str(self.curGame)+"-"+str(m)), result_srdqn, sum(Rsltdnn), 
+			result_rand, sum(RsltRnd),
+			result_strm, sum(RsltStrm)))	
 			
-			self.resultTest += [[Rsltdnn,RsltRnd,RsltFrmu]]
+			self.resultTest += [[Rsltdnn,RsltRnd,RsltStrm]]
 
 		return sum(Rsltdnn)
 		
@@ -440,7 +449,7 @@ class clBeerGame(object):
 		# if self.config.ifSaveFigure and (self.curGame in range(self.config.saveFigInt[0],self.config.saveFigInt[1])):
 		# 	for k in range(self.config.NoAgent):
 		# 		if self.players[k].compTypeTest == 'dnn':
-		# 			plotBaseStock(self.players[k].dnnBaseStock, 'b', 'base stock of agent '+ str(self.players[k].agentNum), self.curGame, self.config, m)
+		# 			plotBaseStock(self.players[k].srdqnBaseStock, 'b', 'base stock of agent '+ str(self.players[k].agentNum), self.curGame, self.config, m)
 
 		return result,plt
 		

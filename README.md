@@ -1,6 +1,6 @@
 # A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization
 
-The code of the paper `A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization` is presented at this project.
+The code of the paper `A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization` is presented at this project. This code does not work with TensorFlow 2+. 
 
 ## unzip the data
 

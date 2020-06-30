@@ -49,14 +49,14 @@ def savePlot(players, curGame, Rsltdnn, RsltFrmu, RsltOptm, config, m):
 	#add title to plot
 	if config.if_titled_figure:
 		if config.NoHiLayer==2:
-			plt.suptitle("Game No="+str(curGame)+";" + str(config.agentTypes.count("dnn"))+ " SRDQN Agents; SRDQN nodes="+str(node1)+
+			plt.suptitle("Game No="+str(curGame)+";" + str(config.agentTypes.count("srdqn"))+ " SRDQN Agents; SRDQN nodes="+str(node1)+
 			"-"+str(node2)+ "; sum SRDQN=" + str(round(sum(Rsltdnn),2)) + "; sum Strm=" 
 			+ str(round(sum(RsltFrmu),2))  +"; sum BS=" +  str(round(sum(RsltOptm),2))+ "\n"+
 			"Ag SRDQN="+str([round(Rsltdnn[i],2) for i in range(config.NoAgent)])+
 			"; Ag Strm="+str([round(RsltFrmu[i],2) for i in range(config.NoAgent)])+
 			"; Ag BS="+str([round(RsltOptm[i],2) for i in range(config.NoAgent)]), fontsize=12)
 		elif config.NoHiLayer==3:
-			plt.suptitle("Game No="+str(curGame)+";" + str(config.agentTypes.count("dnn"))+ " SRDQN Agents; SRDQN nodes="+str(node1)+
+			plt.suptitle("Game No="+str(curGame)+";" + str(config.agentTypes.count("srdqn"))+ " SRDQN Agents; SRDQN nodes="+str(node1)+
 			"-"+str(node2)+"-"+str(node3)+ "; sum SRDQN=" +  str(round(sum(Rsltdnn),2))  + 
 			"; sum Strm=" +  str(round(sum(RsltFrmu),2))  +"; sum BS=" +  str(round(sum(RsltOptm),2))+"\n"+
 			"Ag SRDQN="+str([round(Rsltdnn[i],2) for i in range(config.NoAgent)])+

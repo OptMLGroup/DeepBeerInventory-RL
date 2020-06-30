@@ -36,10 +36,10 @@ game_arg.add_argument('--actionListLen', type=int, default=0, help='the length o
 game_arg.add_argument('--actionListOpt', type=int, default=0 , help='the action list which is used in optimal and sterman')
 game_arg.add_argument('--actionListLenOpt', type=int, default=0, help='the length of the actionlistopt')
 game_arg.add_argument('--agentTypes', type=list, default=['dnn','dnn','dnn','dnn'], help='the player types')
-game_arg.add_argument('--agent_type1', type=str, default='dnn', help='the player types for agent 1, it can be dnn, frmu, optm, rnd')
-game_arg.add_argument('--agent_type2', type=str, default='dnn', help='the player types for agent 2, it can be dnn, frmu, optm, rnd')
-game_arg.add_argument('--agent_type3', type=str, default='dnn', help='the player types for agent 3, it can be dnn, frmu, optm, rnd')
-game_arg.add_argument('--agent_type4', type=str, default='dnn', help='the player types for agent 4, it can be dnn, frmu, optm, rnd')
+game_arg.add_argument('--agent_type1', type=str, default='dnn', help='the player types for agent 1, it can be dnn, Strm, bs, rnd')
+game_arg.add_argument('--agent_type2', type=str, default='dnn', help='the player types for agent 2, it can be dnn, Strm, bs, rnd')
+game_arg.add_argument('--agent_type3', type=str, default='dnn', help='the player types for agent 3, it can be dnn, Strm, bs, rnd')
+game_arg.add_argument('--agent_type4', type=str, default='dnn', help='the player types for agent 4, it can be dnn, Strm, bs, rnd')
 game_arg.add_argument('--NoAgent', type=int, default=1, help='number of agents, currently it should be in {1,2,3,4}')
 game_arg.add_argument('--cp1', type=float, default=2.0, help='shortage cost of player 1')
 game_arg.add_argument('--cp2', type=float, default=0.0, help='shortage cost of player 2')
@@ -179,8 +179,8 @@ test_arg.add_argument('--use_initial_BS', type=str2bool, default=False, help='If
 reporting_arg = add_argument_group('reporting')
 reporting_arg.add_argument('--Rsltdnn', type=list, default=[], help='the result of dnn play tests will be saved here')
 reporting_arg.add_argument('--RsltRnd', type=list, default=[], help='the result of random play tests will be saved here')
-reporting_arg.add_argument('--RsltFrmu', type=list, default=[], help='the result of heuristic fomula play tests will be saved here')
-reporting_arg.add_argument('--RsltOptm', type=list, default=[], help='the result of optimal play tests will be saved here')
+reporting_arg.add_argument('--RsltStrm', type=list, default=[], help='the result of heuristic fomula play tests will be saved here')
+reporting_arg.add_argument('--Rsltbs', type=list, default=[], help='the result of optimal play tests will be saved here')
 reporting_arg.add_argument('--ifSaveHist', type=str2bool, default='False', help='if it is true, saves history, prediction, and the randBatch in each period, WARNING: just make it True in small runs, it saves huge amount of files.')
 
 		
@@ -188,9 +188,9 @@ reporting_arg.add_argument('--ifSaveHist', type=str2bool, default='False', help=
 def buildActionList(config):
 	aDiv = 1  # difference in the action list
 	if config.fixedAction:
-		actions = range(0,config.actionMax+1,aDiv) # If you put the second argument =11, creates an actionlist from 0..xx
+		actions = list(range(0,config.actionMax+1,aDiv)) # If you put the second argument =11, creates an actionlist from 0..xx
 	else:
-		actions = range(config.actionLow,config.actionUp+1,aDiv) 
+		actions = list(range(config.actionLow,config.actionUp+1,aDiv) )
 	return actions	
 	
 # specify the dimension of the state of the game	
@@ -205,80 +205,80 @@ def getStateDim(config):
 
 	return stateDim	
 
-# agents 1=[dnn,dnn,dnn,dnn]; 2=[dnn,frmu,frmu,frmu]; 3=[dnn,optm,optm,optm]
+# agents 1=[dnn,dnn,dnn,dnn]; 2=[dnn,Strm,Strm,Strm]; 3=[dnn,bs,bs,bs]
 def setAgentType(config):
 	if config.brainTypes == 1:   # all agents are run by DNN- Also, load-model loads from brain-3+agentNum-
 		# Also multi-agent with double target uses this brainTypes.
-		config.agentTypes = ["dnn", "dnn","dnn","dnn"]
+		config.agentTypes = ["srdqn", "srdqn","srdqn","srdqn"]
 		config.to_prev_ai = [3,-1,-1,-1]
 	elif config.brainTypes == 2: # one agent is run by DNN- Also, load-model loads from brain-3+agentNum-
 		# Also multi-agent with double target uses this brainTypes.
-		config.agentTypes = ["dnn", "dnn","dnn","dnn"]
+		config.agentTypes = ["srdqn", "srdqn","srdqn","srdqn"]
 		config.to_prev_ai = [3,-1,-1,-1]
 	elif config.brainTypes == 3: 
-		config.agentTypes = ["dnn", "optm","optm","optm"]
+		config.agentTypes = ["srdqn", "bs","bs","bs"]
 	elif config.brainTypes == 4: 
-		config.agentTypes = ["optm", "dnn","optm","optm"]
+		config.agentTypes = ["bs", "srdqn","bs","bs"]
 	elif config.brainTypes == 5: 
-		config.agentTypes = ["optm", "optm","dnn","optm"]
+		config.agentTypes = ["bs", "bs","srdqn","bs"]
 	elif config.brainTypes == 6: 
-		config.agentTypes = ["optm", "optm","optm","dnn"]
+		config.agentTypes = ["bs", "bs","bs","srdqn"]
 	elif config.brainTypes == 7: 
-		config.agentTypes = ["dnn", "frmu","frmu","frmu"]
+		config.agentTypes = ["srdqn", "Strm","Strm","Strm"]
 	elif config.brainTypes == 8: 
-		config.agentTypes = ["frmu", "dnn","frmu","frmu"]
+		config.agentTypes = ["Strm", "srdqn","Strm","Strm"]
 	elif config.brainTypes == 9: 
-		config.agentTypes = ["frmu", "frmu","dnn","frmu"]
+		config.agentTypes = ["Strm", "Strm","srdqn","Strm"]
 	elif config.brainTypes == 10: 
-		config.agentTypes = ["frmu", "frmu","frmu","dnn"]
+		config.agentTypes = ["Strm", "Strm","Strm","srdqn"]
 	elif config.brainTypes == 11: 
-		config.agentTypes = ["dnn", "rnd","rnd","rnd"]
+		config.agentTypes = ["srdqn", "rnd","rnd","rnd"]
 	elif config.brainTypes == 12: 
-		config.agentTypes = ["rnd", "dnn","rnd","rnd"]
+		config.agentTypes = ["rnd", "srdqn","rnd","rnd"]
 	elif config.brainTypes == 13: 
-		config.agentTypes = ["rnd", "rnd","dnn","rnd"]
+		config.agentTypes = ["rnd", "rnd","srdqn","rnd"]
 	elif config.brainTypes == 14: 
-		config.agentTypes = ["rnd", "rnd","rnd","dnn"]
+		config.agentTypes = ["rnd", "rnd","rnd","srdqn"]
 	elif config.brainTypes == 15: 
-		config.agentTypes = ["frmu", "optm","optm","optm"]		
+		config.agentTypes = ["Strm", "bs","bs","bs"]		
 	elif config.brainTypes == 16: 
-		config.agentTypes = ["optm", "frmu","optm","optm"]		
+		config.agentTypes = ["bs", "Strm","bs","bs"]		
 	elif config.brainTypes == 17: 
-		config.agentTypes = ["optm", "optm","frmu","optm"]		
+		config.agentTypes = ["bs", "bs","Strm","bs"]		
 	elif config.brainTypes == 18: 
-		config.agentTypes = ["optm", "optm","optm","frmu"]
+		config.agentTypes = ["bs", "bs","bs","Strm"]
 	elif config.brainTypes == 19: 
-		config.agentTypes = ["rnd", "optm","optm","optm"]		
+		config.agentTypes = ["rnd", "bs","bs","bs"]		
 	elif config.brainTypes == 20: 
-		config.agentTypes = ["optm", "rnd","optm","optm"]		
+		config.agentTypes = ["bs", "rnd","bs","bs"]		
 	elif config.brainTypes == 21: 
-		config.agentTypes = ["optm", "optm","rnd","optm"]		
+		config.agentTypes = ["bs", "bs","rnd","bs"]		
 	elif config.brainTypes == 22: 
-		config.agentTypes = ["optm", "optm","optm","rnd"]						
+		config.agentTypes = ["bs", "bs","bs","rnd"]						
 	elif config.brainTypes == 23: 
-		config.agentTypes = ["frmu", "frmu","frmu","frmu"]
+		config.agentTypes = ["Strm", "Strm","Strm","Strm"]
 	elif config.brainTypes == 24: 
 		config.agentTypes = ["rnd", "rnd","rnd","rnd"]		
 	elif config.brainTypes == 25: 
-		config.agentTypes = ["optm", "optm","optm","optm"]
+		config.agentTypes = ["bs", "bs","bs","bs"]
 	elif config.brainTypes == 26: 
-		config.agentTypes = ["optm", "frmu","frmu","frmu"]
+		config.agentTypes = ["bs", "Strm","Strm","Strm"]
 	elif config.brainTypes == 27: 
-		config.agentTypes = ["frmu", "optm","frmu","frmu"]
+		config.agentTypes = ["Strm", "bs","Strm","Strm"]
 	elif config.brainTypes == 28: 
-		config.agentTypes = ["frmu", "frmu","optm","frmu"]
+		config.agentTypes = ["Strm", "Strm","bs","Strm"]
 	elif config.brainTypes == 29: 
-		config.agentTypes = ["frmu", "frmu","frmu","optm"]
+		config.agentTypes = ["Strm", "Strm","Strm","bs"]
 	elif config.brainTypes == 30: 
-		config.agentTypes = ["optm", "rnd","rnd","rnd"]
+		config.agentTypes = ["bs", "rnd","rnd","rnd"]
 	elif config.brainTypes == 31: 
-		config.agentTypes = ["rnd", "optm","rnd","rnd"]
+		config.agentTypes = ["rnd", "bs","rnd","rnd"]
 	elif config.brainTypes == 32: 
-		config.agentTypes = ["rnd", "rnd","optm","rnd"]
+		config.agentTypes = ["rnd", "rnd","bs","rnd"]
 	elif config.brainTypes == 33: 
-		config.agentTypes = ["rnd", "rnd","rnd","optm"]		
+		config.agentTypes = ["rnd", "rnd","rnd","bs"]		
 	else:
-		config.agentTypes = ["optm", "optm","optm","optm"]
+		config.agentTypes = ["bs", "bs","bs","bs"]
 
 def fillnodes(config):
 	if config.NoHiLayer == 2:
@@ -579,9 +579,9 @@ def update_config(config):
 
 	config.actionListLen=len(config.actionList)
 	if config.demandDistribution == 0:
-		config.actionListOpt=range(0,int(max(config.actionUp*30+1, 3*sum(config.f))),1)
+		config.actionListOpt=list(range(0,int(max(config.actionUp*30+1, 3*sum(config.f))),1))
 	else:
-		config.actionListOpt=range(0,int(max(config.actionUp*30+1, 7*sum(config.f))),1)
+		config.actionListOpt=list(range(0,int(max(config.actionUp*30+1, 7*sum(config.f))),1))
 	config.actionListLenOpt=len(config.actionListOpt)
 	config.agentTypes=['dnn','dnn','dnn','dnn']
 	config.saveFigInt = [config.saveFigIntLow, config.saveFigIntUp]

@@ -25,8 +25,8 @@ class Agent(object):
 		self.AS = np.zeros((1,1)) 	# arriced shipment 
 		self.AO = np.zeros((1,1))	# arrived order
 		self.action=0		# the action at time t
-		self.compTypeTrain = compuType # rnd -> random / dnn-> dnn / frmu-> formula-Rong2008 / optm -> optimal policy if exists
-		self.compTypeTest = compuType # rnd -> random / dnn-> dnn / frmu-> formula-Rong2008 / optm -> optimal policy if exists
+		self.compTypeTrain = compuType # rnd -> random / srdqn-> srdqn / Strm-> formula-Rong2008 / bs -> optimal policy if exists
+		self.compTypeTest = compuType # rnd -> random / srdqn-> srdqn / Strm-> formula-Rong2008 / bs -> optimal policy if exists
 		self.alpha_b = self.config.alpha_b[self.agentNum] # parameters for the formula
 		self.betta_b = self.config.betta_b[self.agentNum] # parameters for the formula
 		if self.config.demandDistribution == 0:
@@ -48,12 +48,12 @@ class Agent(object):
 
 		self.hist = []  # this is used for plotting - keeps the history for only one game
 		self.hist2 = []	# this is used for animation usage
-		self.dnnBaseStock = []	# this holds the base stock levels that dnn has came up with. added on Nov 8, 2017
+		self.srdqnBaseStock = []	# this holds the base stock levels that srdqn has came up with. added on Nov 8, 2017
 		self.T = 0
-		self.optmlBaseStock = 0  
-		self.init_optmlBaseStock = 0 
+		self.bsBaseStock = 0  
+		self.init_bsBaseStock = 0 
 		self.nextObservation = []
-		if self.compTypeTrain == 'dnn':
+		if self.compTypeTrain == 'srdqn':
 			self.brain = DQN(self.agentNum,config)
 			self.brain.setInitState(self.curState) # sets the initial input of the network
 	
@@ -73,11 +73,11 @@ class Agent(object):
 		self.action= [] 
 		self.hist = []
 		self.hist2 = []
-		self.dnnBaseStock = []	# this holds the base stock levels that dnn has came up with. added on Nov 8, 2017
+		self.srdqnBaseStock = []	# this holds the base stock levels that srdqn has came up with. added on Nov 8, 2017
 		self.T = T
 		self.curObservation = self.getCurState(1)  # this function gets the current state of the game
 		self.nextObservation = []
-		if self.compTypeTrain == 'dnn':
+		if self.compTypeTrain == 'srdqn':
 			self.brain.setInitState(self.curObservation) # sets the initial input of the network
 		
 	
@@ -94,7 +94,7 @@ class Agent(object):
 				a = self.config.actionList[np.argmax(self.action)]
 			else:
 				# "d + x" rule 
-				if self.compTypeTest == 'dnn':
+				if self.compTypeTest == 'srdqn':
 					a = max(0, self.config.actionList[np.argmax(self.action)]*self.config.action_step + self.AO[curTime])
 				elif self.compTypeTest == 'rnd':
 					a = max(0, self.config.actionList[np.argmax(self.action)] + self.AO[curTime])
@@ -105,7 +105,7 @@ class Agent(object):
 			if self.config.fixedAction:
 				a = self.config.actionList[np.argmax(self.action)]
 			else:
-				if self.compTypeTrain == 'dnn':
+				if self.compTypeTrain == 'srdqn':
 					a = max(0, self.config.actionList[np.argmax(self.action)]*self.config.action_step + self.AO[curTime])
 				elif self.compTypeTest == 'rnd':
 					a = max(0, self.config.actionList[np.argmax(self.action)] + self.AO[curTime])
