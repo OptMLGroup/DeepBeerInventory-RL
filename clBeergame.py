@@ -10,7 +10,6 @@ import os
 from matplotlib import rc
 rc('text', usetex=True)
 import tensorflow as tf 
-from collections import deque 
 
 class clBeerGame(object):
 	def __init__(self, config):
