@@ -1,4 +1,4 @@
-from clSRDQN import DQN
+from SRDQN import DQN
 import random
 import numpy as np 
 
