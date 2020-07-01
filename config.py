@@ -69,6 +69,7 @@ game_arg.add_argument('--iftl', type=str2bool, default=False, help='if apply tra
 game_arg.add_argument('--ifTransferFromSmallerActionSpace', type=str2bool, default=False, help='if want to transfer knowledge from a network with different action space size.')
 game_arg.add_argument('--baseActionSize', type=int, default=5, help='if ifTransferFromSmallerActionSpace is true, this determines the size of action space of saved network')
 game_arg.add_argument('--tlBaseBrain', type=int, default=3, help='the gameConfig of the base network for re-training with transfer-learning')
+game_arg.add_argument('--baseDemandDistribution', type=int, default=0, help='same as the demandDistribution')
 game_arg.add_argument('--MultiAgent', type=str2bool, default=False, help='if run multi-agent RL model, not fully operational')
 game_arg.add_argument('--MultiAgentRun', type=list, default=[True, True, True, True], help='In the multi-RL setting, it determines which agent should get training.')
 game_arg.add_argument('--if_use_AS_t_plus_1', type=str2bool, default='False', help='if use AS[t+1], not AS[t] in the input of DNN')
