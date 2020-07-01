@@ -1,5 +1,4 @@
 from SRDQN import DQN
-import random
 import numpy as np 
 
 # Here we want to define the agent class for the BeerGame
