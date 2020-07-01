@@ -7,7 +7,6 @@ import numpy as np
 import random
 from config import get_config, update_config
 import tensorflow as tf 
-from sensitivity_run import set_config
 
 config = None
 
@@ -17,13 +16,7 @@ def main(config):
 
 	# prepare loggers and directories
 	prepare_dirs_and_logger(config)
-
-
-	if config.preload_config:
-		config = set_config(config)
-
 	config = update_config(config)
-
 	# save the current configuration of the problem in a json file
 	save_config(config)	
 	

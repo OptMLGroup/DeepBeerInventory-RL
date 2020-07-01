@@ -61,8 +61,8 @@ def prepare_dirs_and_logger(config):
 			tl = 1
 		else:
 			tl = 0
-		config.model_name = "{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}".format(config.task, get_time(),
-			config.brainTypes, config.tlBaseBrain, config.NoHiLayer, config.NoFixedLayer, 
+		config.model_name = "{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}".format(config.task, get_time(),
+			config.gameConfig, config.tlBaseBrain, config.NoHiLayer, 
 			config.demandUp, config.cp1, config.cp2, config.cp3, config.cp4, config.ch1, config.ch2, config.ch3, config.ch4,
 			config.distCoeff, config.NoAgent, config.maxEpisodesTrain, config.lr0, config.multPerdInpt, config.dnnUpCnt, tl, 
 			config.actionUp, config.demandDistribution, config.action_step, config.data_id)

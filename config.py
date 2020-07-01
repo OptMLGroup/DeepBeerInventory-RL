@@ -59,7 +59,7 @@ game_arg.add_argument('--betta_b3', type=float, default=-0.2, help='beta of Ster
 game_arg.add_argument('--betta_b4', type=float, default=-0.2, help='beta of Sterman formula parameter for player 4')
 game_arg.add_argument('--eta', type=list, default=[0,4,4,4], help='the total cost regulazer')
 game_arg.add_argument('--distCoeff', type=int, default=20, help='the total cost regulazer')
-game_arg.add_argument('--brainTypes', type=int, default=3, help='if it is "0", it uses the current "agentType", otherwise sets agent types according to the function setAgentType() in this file.')
+game_arg.add_argument('--gameConfig', type=int, default=3, help='if it is "0", it uses the current "agentType", otherwise sets agent types according to the function setAgentType() in this file.')
 game_arg.add_argument('--ifUseTotalReward', type=str2bool, default='False', help='if you want to have the total rewards in the experience replay, set it to true.')
 game_arg.add_argument('--ifUsedistTotReward', type=str2bool, default='True', help='If use correction to the rewards in the experience replay for all iterations of current game')
 game_arg.add_argument('--ifUseASAO', type=str2bool, default='True', help='if use AS and AO, i.e., received shipment and received orders in the input of DNN')
@@ -68,11 +68,10 @@ game_arg.add_argument('--stateDim', type=int, default=5, help='Number of element
 game_arg.add_argument('--iftl', type=str2bool, default=False, help='if apply transfer learning')
 game_arg.add_argument('--ifTransferFromSmallerActionSpace', type=str2bool, default=False, help='if want to transfer knowledge from a network with different action space size.')
 game_arg.add_argument('--baseActionSize', type=int, default=5, help='if ifTransferFromSmallerActionSpace is true, this determines the size of action space of saved network')
-game_arg.add_argument('--tlBaseBrain', type=int, default=3, help='the brainTypes of the base network for re-training with transfer-learning')
+game_arg.add_argument('--tlBaseBrain', type=int, default=3, help='the gameConfig of the base network for re-training with transfer-learning')
 game_arg.add_argument('--MultiAgent', type=str2bool, default=False, help='if run multi-agent RL model, not fully operational')
 game_arg.add_argument('--MultiAgentRun', type=list, default=[True, True, True, True], help='In the multi-RL setting, it determines which agent should get training.')
 game_arg.add_argument('--if_use_AS_t_plus_1', type=str2bool, default='False', help='if use AS[t+1], not AS[t] in the input of DNN')
-game_arg.add_argument('--preload_config', type=str2bool, default=False, help='If true it calls the set_config function from sensitivity_run.py .')
 game_arg.add_argument('--ifSinglePathExist', type=str2bool, default=False, help='If true it uses the predefined path in pre_model_dir and does not merge it with demandDistribution.')
 game_arg.add_argument('--ifPlaySavedData', type=str2bool, default=False, help='If true it uses the saved actions which are read from file.')
 
@@ -207,75 +206,75 @@ def getStateDim(config):
 
 # agents 1=[dnn,dnn,dnn,dnn]; 2=[dnn,Strm,Strm,Strm]; 3=[dnn,bs,bs,bs]
 def setAgentType(config):
-	if config.brainTypes == 1:   # all agents are run by DNN- Also, load-model loads from brain-3+agentNum-
-		# Also multi-agent with double target uses this brainTypes.
+	if config.gameConfig == 1:   # all agents are run by DNN- Also, load-model loads from brain-3+agentNum-
+		# Also multi-agent with double target uses this gameConfig.
 		config.agentTypes = ["srdqn", "srdqn","srdqn","srdqn"]
 		config.to_prev_ai = [3,-1,-1,-1]
-	elif config.brainTypes == 2: # one agent is run by DNN- Also, load-model loads from brain-3+agentNum-
-		# Also multi-agent with double target uses this brainTypes.
+	elif config.gameConfig == 2: # one agent is run by DNN- Also, load-model loads from brain-3+agentNum-
+		# Also multi-agent with double target uses this gameConfig.
 		config.agentTypes = ["srdqn", "srdqn","srdqn","srdqn"]
 		config.to_prev_ai = [3,-1,-1,-1]
-	elif config.brainTypes == 3: 
+	elif config.gameConfig == 3: 
 		config.agentTypes = ["srdqn", "bs","bs","bs"]
-	elif config.brainTypes == 4: 
+	elif config.gameConfig == 4: 
 		config.agentTypes = ["bs", "srdqn","bs","bs"]
-	elif config.brainTypes == 5: 
+	elif config.gameConfig == 5: 
 		config.agentTypes = ["bs", "bs","srdqn","bs"]
-	elif config.brainTypes == 6: 
+	elif config.gameConfig == 6: 
 		config.agentTypes = ["bs", "bs","bs","srdqn"]
-	elif config.brainTypes == 7: 
+	elif config.gameConfig == 7: 
 		config.agentTypes = ["srdqn", "Strm","Strm","Strm"]
-	elif config.brainTypes == 8: 
+	elif config.gameConfig == 8: 
 		config.agentTypes = ["Strm", "srdqn","Strm","Strm"]
-	elif config.brainTypes == 9: 
+	elif config.gameConfig == 9: 
 		config.agentTypes = ["Strm", "Strm","srdqn","Strm"]
-	elif config.brainTypes == 10: 
+	elif config.gameConfig == 10: 
 		config.agentTypes = ["Strm", "Strm","Strm","srdqn"]
-	elif config.brainTypes == 11: 
+	elif config.gameConfig == 11: 
 		config.agentTypes = ["srdqn", "rnd","rnd","rnd"]
-	elif config.brainTypes == 12: 
+	elif config.gameConfig == 12: 
 		config.agentTypes = ["rnd", "srdqn","rnd","rnd"]
-	elif config.brainTypes == 13: 
+	elif config.gameConfig == 13: 
 		config.agentTypes = ["rnd", "rnd","srdqn","rnd"]
-	elif config.brainTypes == 14: 
+	elif config.gameConfig == 14: 
 		config.agentTypes = ["rnd", "rnd","rnd","srdqn"]
-	elif config.brainTypes == 15: 
+	elif config.gameConfig == 15: 
 		config.agentTypes = ["Strm", "bs","bs","bs"]		
-	elif config.brainTypes == 16: 
+	elif config.gameConfig == 16: 
 		config.agentTypes = ["bs", "Strm","bs","bs"]		
-	elif config.brainTypes == 17: 
+	elif config.gameConfig == 17: 
 		config.agentTypes = ["bs", "bs","Strm","bs"]		
-	elif config.brainTypes == 18: 
+	elif config.gameConfig == 18: 
 		config.agentTypes = ["bs", "bs","bs","Strm"]
-	elif config.brainTypes == 19: 
+	elif config.gameConfig == 19: 
 		config.agentTypes = ["rnd", "bs","bs","bs"]		
-	elif config.brainTypes == 20: 
+	elif config.gameConfig == 20: 
 		config.agentTypes = ["bs", "rnd","bs","bs"]		
-	elif config.brainTypes == 21: 
+	elif config.gameConfig == 21: 
 		config.agentTypes = ["bs", "bs","rnd","bs"]		
-	elif config.brainTypes == 22: 
+	elif config.gameConfig == 22: 
 		config.agentTypes = ["bs", "bs","bs","rnd"]						
-	elif config.brainTypes == 23: 
+	elif config.gameConfig == 23: 
 		config.agentTypes = ["Strm", "Strm","Strm","Strm"]
-	elif config.brainTypes == 24: 
+	elif config.gameConfig == 24: 
 		config.agentTypes = ["rnd", "rnd","rnd","rnd"]		
-	elif config.brainTypes == 25: 
+	elif config.gameConfig == 25: 
 		config.agentTypes = ["bs", "bs","bs","bs"]
-	elif config.brainTypes == 26: 
+	elif config.gameConfig == 26: 
 		config.agentTypes = ["bs", "Strm","Strm","Strm"]
-	elif config.brainTypes == 27: 
+	elif config.gameConfig == 27: 
 		config.agentTypes = ["Strm", "bs","Strm","Strm"]
-	elif config.brainTypes == 28: 
+	elif config.gameConfig == 28: 
 		config.agentTypes = ["Strm", "Strm","bs","Strm"]
-	elif config.brainTypes == 29: 
+	elif config.gameConfig == 29: 
 		config.agentTypes = ["Strm", "Strm","Strm","bs"]
-	elif config.brainTypes == 30: 
+	elif config.gameConfig == 30: 
 		config.agentTypes = ["bs", "rnd","rnd","rnd"]
-	elif config.brainTypes == 31: 
+	elif config.gameConfig == 31: 
 		config.agentTypes = ["rnd", "bs","rnd","rnd"]
-	elif config.brainTypes == 32: 
+	elif config.gameConfig == 32: 
 		config.agentTypes = ["rnd", "rnd","bs","rnd"]
-	elif config.brainTypes == 33: 
+	elif config.gameConfig == 33: 
 		config.agentTypes = ["rnd", "rnd","rnd","bs"]		
 	else:
 		config.agentTypes = ["bs", "bs","bs","bs"]
@@ -290,73 +289,73 @@ def fillnodes(config):
 def setSavedDimentionPerBrain(config):
 	if config.ifUsePreviousModel and not config.iftl:
 		if config.demandDistribution == 0 and config.demandUp == 9 and config.demandLow == 0 and config.actionUp == 8:
-			if config.brainTypes == 3:
+			if config.gameConfig == 3:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61
-			elif config.brainTypes == 4:
+			elif config.gameConfig == 4:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61
-			elif config.brainTypes == 5:
+			elif config.gameConfig == 5:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 6:
+			elif config.gameConfig == 6:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 7:
+			elif config.gameConfig == 7:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 8:
+			elif config.gameConfig == 8:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 9:
+			elif config.gameConfig == 9:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 10:
+			elif config.gameConfig == 10:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 11:
+			elif config.gameConfig == 11:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 12:
+			elif config.gameConfig == 12:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 13:
+			elif config.gameConfig == 13:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 14:
+			elif config.gameConfig == 14:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
@@ -364,73 +363,73 @@ def setSavedDimentionPerBrain(config):
 				config.node3=61		
 		
 		elif config.demandDistribution == 1 and config.demandMu == 10 and config.demandSigma == 2 and config.actionUp == 5:
-			if config.brainTypes == 3:
+			if config.gameConfig == 3:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61
-			elif config.brainTypes == 4:
+			elif config.gameConfig == 4:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61
-			elif config.brainTypes == 5:
+			elif config.gameConfig == 5:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 6:
+			elif config.gameConfig == 6:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 7:
+			elif config.gameConfig == 7:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 8:
+			elif config.gameConfig == 8:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 9:
+			elif config.gameConfig == 9:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 10:
+			elif config.gameConfig == 10:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 11:
+			elif config.gameConfig == 11:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 12:
+			elif config.gameConfig == 12:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 13:
+			elif config.gameConfig == 13:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 14:
+			elif config.gameConfig == 14:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
@@ -438,73 +437,73 @@ def setSavedDimentionPerBrain(config):
 				config.node3=61		
 
 		elif config.demandDistribution == 2 and config.demandUp == 9 and config.demandLow == 0 and config.actionUp == 8:
-			if config.brainTypes == 3:
+			if config.gameConfig == 3:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61
-			elif config.brainTypes == 4:
+			elif config.gameConfig == 4:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61
-			elif config.brainTypes == 5:
+			elif config.gameConfig == 5:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 6:
+			elif config.gameConfig == 6:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 7:
+			elif config.gameConfig == 7:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 8:
+			elif config.gameConfig == 8:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 9:
+			elif config.gameConfig == 9:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 10:
+			elif config.gameConfig == 10:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 11:
+			elif config.gameConfig == 11:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 12:
+			elif config.gameConfig == 12:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 13:
+			elif config.gameConfig == 13:
 				config.multPerdInpt = 5
 				config.NoHiLayer = 3
 				config.node1=180
 				config.node2=130
 				config.node3=61		
-			elif config.brainTypes == 14:
+			elif config.gameConfig == 14:
 				config.multPerdInpt = 10
 				config.NoHiLayer = 3
 				config.node1=180
@@ -512,22 +511,22 @@ def setSavedDimentionPerBrain(config):
 				config.node3=61		
 
 		elif config.demandDistribution != 3 and config.demandDistribution != 4:
-			if config.brainTypes == 7:
+			if config.gameConfig == 7:
 				config.dnnUpCnt = 10000
 				config.multPerdInpt = 5
 				config.NoHiLayer = 2
 				config.lr0 = 0.001
-			elif config.brainTypes == 8:
+			elif config.gameConfig == 8:
 				config.dnnUpCnt = 5000
 				config.multPerdInpt = 5
 				config.NoHiLayer = 2 # this should be 3
 				config.lr0 = 0.00025
-			elif config.brainTypes == 9:
+			elif config.gameConfig == 9:
 				config.dnnUpCnt = 5000
 				config.multPerdInpt = 3
 				config.NoHiLayer = 2
 				config.lr0 = 0.001
-			elif config.brainTypes == 10:
+			elif config.gameConfig == 10:
 				config.dnnUpCnt = 5000
 				config.multPerdInpt = 3 # it should be 5 
 				config.NoHiLayer = 2
@@ -586,7 +585,7 @@ def update_config(config):
 	config.agentTypes=['dnn','dnn','dnn','dnn']
 	config.saveFigInt = [config.saveFigIntLow, config.saveFigIntUp]
 	
-	if config.brainTypes == 0:
+	if config.gameConfig == 0:
 		config.NoAgent=min(config.NoAgent,len(config.agentTypes))
 		config.agentTypes=[config.agent_type1,config.agent_type2,config.agent_type3,config.agent_type4]
 	else:

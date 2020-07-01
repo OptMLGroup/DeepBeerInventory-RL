@@ -19,7 +19,7 @@ def main(config):
 	random.seed(10) 
 
 	# set a non-dqn default value 
-	config.brainTypes = 26	
+	config.gameConfig = 26	
 	config = set_config(config)
 	config.gamma=0.99
 	config = update_config(config)
@@ -115,7 +115,7 @@ def main(config):
 	min_brain = min(brains)
 	for brain in brains:
 		print strftime("%Y-%m-%d %H:%M:%S", gmtime()), "brain=", brain 
-		config.brainTypes = brain 
+		config.gameConfig = brain 
 		config = update_config(config)
 		for k in range(0,config.NoAgent):
 			beerGame.players[k].compTypeTest = config.agentTypes[k]

@@ -3,7 +3,7 @@ from time import gmtime, strftime
 import numpy as np
 import random
 from random import randint
-from clAgent import Agent
+from BGAgent import Agent
 from plotting import plotting, savePlot, plotBaseStock
 import matplotlib.pyplot as plt
 import os 
@@ -332,14 +332,14 @@ class clBeerGame(object):
 		result_strm= ', '.join(map("{:.2f}".format, resultSummary[2])) 
 		if self.ifOptimalSolExist:
 			result_bs= ', '.join(map("{:.2f}".format, resultSummary[3])) 
-			print('SUMMARY; {0:s}; ITER= {1:d}; DNN= [{2:s}]; SUM = {3:2.4f}; RND= [{4:s}]; SUM = {5:2.4f}; STRM= [{6:s}]; SUM = {7:2.4f}; BS= [{8:s}]; SUM = {9:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
+			print('SUMMARY; {0:s}; ITER= {1:d}; SRDQN= [{2:s}]; SUM = {3:2.4f}; Rand= [{4:s}]; SUM = {5:2.4f}; STRM= [{6:s}]; SUM = {7:2.4f}; BS= [{8:s}]; SUM = {9:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
 				self.curGame, result_srdqn, sum(resultSummary[0]), 
 				result_rand, sum(resultSummary[1]),
 				result_strm, sum(resultSummary[2]), 
 				result_bs, sum(resultSummary[3])))	
 
 		else:
-			print('SUMMARY; {0:s}; ITER= {1:d}; DNN= [{2:s}]; SUM = {3:2.4f}; RND= [{4:s}]; SUM = {5:2.4f}; STRM= [{6:s}]; SUM = {7:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
+			print('SUMMARY; {0:s}; ITER= {1:d}; SRDQN= [{2:s}]; SUM = {3:2.4f}; Rand= [{4:s}]; SUM = {5:2.4f}; STRM= [{6:s}]; SUM = {7:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
 				self.curGame, result_srdqn, sum(resultSummary[0]), 
 				result_rand, sum(resultSummary[1]),
 				result_strm, sum(resultSummary[2])))
@@ -411,7 +411,7 @@ class clBeerGame(object):
 		result_strm = ', '.join(map("{:.2f}".format, RsltStrm)) 
 		if self.ifOptimalSolExist:
 			result_bs = ', '.join(map("{:.2f}".format, Rsltbs)) 
-			print('output; {0:s}; Iter= {1:s}; dnn= [{2:s}]; sum = {3:2.4f}; rnd= [{4:s}]; sum = {5:2.4f}; Strm= [{6:s}]; sum = {7:2.4f}; BS= [{8:s}]; sum = {9:2.4f}'.format(
+			print('output; {0:s}; Iter= {1:s}; SRDQN= [{2:s}]; sum = {3:2.4f}; Rand= [{4:s}]; sum = {5:2.4f}; Strm= [{6:s}]; sum = {7:2.4f}; BS= [{8:s}]; sum = {9:2.4f}'.format(
 			strftime("%Y-%m-%d %H:%M:%S", gmtime()) , str(str(self.curGame)+"-"+str(m)), result_srdqn , sum(Rsltdnn), 
 			result_rand, sum(RsltRnd),
 			result_strm, sum(RsltStrm), 
@@ -419,7 +419,7 @@ class clBeerGame(object):
 			self.resultTest +=  [[Rsltdnn,RsltRnd,RsltStrm,Rsltbs]]
 
 		else:
-			print('output; {0:s}; Iter= {1:s}; dnn= [{2:s}]; sum = {3:2.4f}; rnd= [{4:s}]; sum = {5:2.4f}; Strm= [{6:s}]; sum = {7:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
+			print('output; {0:s}; Iter= {1:s}; SRDQN= [{2:s}]; sum = {3:2.4f}; Rand= [{4:s}]; sum = {5:2.4f}; Strm= [{6:s}]; sum = {7:2.4f}'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime()) , 
 			str(str(self.curGame)+"-"+str(m)), result_srdqn, sum(Rsltdnn), 
 			result_rand, sum(RsltRnd),
 			result_strm, sum(RsltStrm)))	
