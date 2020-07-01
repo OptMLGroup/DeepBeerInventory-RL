@@ -58,25 +58,25 @@ class DQN:
 				with tf.Session(config=tf.ConfigProto(intra_op_parallelism_threads=self.config.number_cpu_active, gpu_options=tf.GPUOptions(allow_growth=True))) as sess:
 					weights, biases = self.createQNetworkForTL()
 					sess.run(tf.global_variables_initializer())				
-					if self.config.demandDistribution == 0:
+					if self.config.baseDemandDistribution == 0:
 						directory=os.path.join(self.config.pre_model_dir,'uniform/'+str(int(self.config.demandLow))+'-'+str(int(self.config.demandUp)))
-					elif self.config.demandDistribution == 1:
+					elif self.config.baseDemandDistribution == 1:
 						directory=os.path.join(self.config.pre_model_dir,'normal/'+str(int(self.config.demandMu))+'-'+str(int(self.config.demandSigma)))
-					elif self.config.demandDistribution == 2:
+					elif self.config.baseDemandDistribution == 2:
 						directory=os.path.join(self.config.pre_model_dir,'classic')
-					elif self.config.demandDistribution == 3:
-						directory=os.path.join(self.config.pre_model_dir,'basket-'+str(self.config.data_id))
-					elif self.config.demandDistribution == 4:
-						directory=os.path.join(self.config.pre_model_dir,'forecast-'+str(self.config.data_id))
+					elif self.config.baseDemandDistribution == 3:
+						directory=os.path.join(self.config.pre_model_dir,'basket'+str(self.config.data_id))
+					elif self.config.baseDemandDistribution == 4:
+						directory=os.path.join(self.config.pre_model_dir,'forecast'+str(self.config.data_id))
 
-					if self.config.brainTypes == 1:
+					if self.config.gameConfig == 1:
 						# the Sterman case.
-						base_brain = 7 + self.agentNum
-					elif self.config.brainTypes == 2:
+						base_brain = 7 + self.config.tlBaseBrain
+					elif self.config.gameConfig == 2:
 						# the BS case.
-						base_brain = 3 + self.agentNum
+						base_brain = 3 + self.config.tlBaseBrain
 					else:
-						base_brain = 3 + self.agentNum
+						base_brain = self.config.tlBaseBrain
 					checkpoint = tf.train.get_checkpoint_state(os.path.join(directory, 'brain'+str(base_brain)))
 					# checkpoint = tf.train.get_checkpoint_state(os.path.join(self.config.pre_model_dir, 'brain'+str(self.config.tlBaseBrain)))
 					if checkpoint and checkpoint.model_checkpoint_path:
@@ -135,35 +135,29 @@ class DQN:
 
 					if self.config.ifSinglePathExist:
 						directory=self.config.pre_model_dir
-					elif self.config.demandDistribution == 0:
+					elif self.config.baseDemandDistribution == 0:
 						directory=os.path.join(self.config.pre_model_dir,'uniform/'+str(int(self.config.demandLow))+'-'+str(int(self.config.demandUp)))
-					elif self.config.demandDistribution == 1:
+					elif self.config.baseDemandDistribution == 1:
 						directory=os.path.join(self.config.pre_model_dir,'normal/'+str(int(self.config.demandMu))+'-'+str(int(self.config.demandSigma)))
-					elif self.config.demandDistribution == 2:
+					elif self.config.baseDemandDistribution == 2:
 						directory=os.path.join(self.config.pre_model_dir,'classic')
-					elif self.config.demandDistribution == 3:
-						directory=os.path.join(self.config.pre_model_dir,'basket-'+str(self.config.data_id))
-					elif self.config.demandDistribution == 4:
-						directory=os.path.join(self.config.pre_model_dir,'forecast-'+str(self.config.data_id))
+					elif self.config.baseDemandDistribution == 3:
+						directory=os.path.join(self.config.pre_model_dir,'basket'+str(self.config.data_id))
+					elif self.config.baseDemandDistribution == 4:
+						directory=os.path.join(self.config.pre_model_dir,'forecast'+str(self.config.data_id))
 
 					if self.config.ifSinglePathExist:
-						base_brain = self.agentNum + 1
+						base_brain = self.config.tlBaseBrain + 1
 					else:
-						if self.config.brainTypes == 1:
+						if self.config.gameConfig == 1:
 							# the Sterman case.
-							base_brain = 7 + self.agentNum
-						elif self.config.brainTypes == 2:
-							base_brain = 3 + self.agentNum
-						elif self.config.brainTypes >= 7 and self.config.brainTypes <= 10:
-							# the Sterman case.
-							base_brain = 7 + self.agentNum					
-						elif self.config.brainTypes >= 11 and self.config.brainTypes <= 14:
-							# the Random case.
-							base_brain = 11 + self.agentNum
+							base_brain = 7 + self.config.tlBaseBrain
+						elif self.config.gameConfig == 2:
+							base_brain = 3 + self.config.tlBaseBrain
 						else:
 							# the BS case.
-							base_brain = 3 + self.agentNum
-					# checkpoint = tf.train.get_checkpoint_state(os.path.join(self.config.pre_model_dir, 'brain'+str(self.config.brainTypes)))
+							base_brain = self.config.tlBaseBrain
+					# checkpoint = tf.train.get_checkpoint_state(os.path.join(self.config.pre_model_dir, 'brain'+str(self.config.gameConfig)))
 					if self.config.ifSinglePathExist:
 						model_address = os.path.join(directory, 'model'+str(base_brain))
 					else:
