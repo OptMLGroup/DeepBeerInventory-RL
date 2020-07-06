@@ -18,11 +18,8 @@ def main(config):
 	config = update_config(config)
 	# save the current configuration of the problem in a json file
 	save_config(config)	
-	
-	# we assume have observed just 100 observations, created a frequency vector based on that, 
-	# and then created a randomly generated sample with size 60000 based on that. Then, we have trained the 
-	# beer game using this new samples and the results are provided. In both cases, we run a test based on unseen 
-	# data set of the known dataset. 
+
+	# get the address of data	
 	if config.observation_data:
 		adsr = 'data/demandTr-obs-'
 	elif config.demandDistribution == 3:

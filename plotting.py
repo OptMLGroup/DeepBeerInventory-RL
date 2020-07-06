@@ -5,6 +5,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pylab import *
 
+# plotting 
 def plotting(plt, data, colori, pltLabel):
 	plt.hold(True)
 	
