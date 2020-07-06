@@ -101,3 +101,13 @@ If you set `config.ifSaveFigure=True`, it saves the trajectories of inventory-le
 
 Setting `config.ifsaveHistInterval=True`, activate saving of trajectory of the received order, received shipment, inventory-level, reward, action, open-order, and order-upto-level for each agent in an episode. With this argument, you need to determine the interval between every two epsiode to save the history with `config.saveHistInterval`.
 
+
+## Paper citation
+If you used this code for your experiments or found it helpful, consider citing the following paper:
+
+@article{oroojlooyjadid2017deep,
+  title={A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization},
+  author={Oroojlooyjadid, Afshin and Nazari, MohammadReza and Snyder, Lawrence and Tak{\'a}{\v{c}}, Martin},
+  journal={MSOM},
+  year={2020}
+}
