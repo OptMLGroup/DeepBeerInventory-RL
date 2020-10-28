@@ -1,6 +1,6 @@
 # A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization
 
-The code of the paper `A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization` is presented at this repository. The code works with `Python2.7` and `Python3.4+`. For more information see the list of the requirments. 
+The code of the paper `A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization` is presented at this repository. The code works with `Python2.7` and `Python3.4-Python3.7`. For more information see the list of the requirments (You can install them `pip install -r requirements.txt`). 
 The `main.py` is the file to call to start the training. `BGAgent.py` provides the beer-game agent which involves all the properties and functionality of an agent. `clBeergame.py` instanciates the agents and runs the beer-game simulation. Also, once the number of observations in the replay buffer filled by the minimum requirement, it calls the train-step of the SRDQN algorithm. The DNN approximator and SRDQN algorithm are implemented in `SRDQN.py`. `config.py` introduce all arguments and their default values, as well as some functions to properly build the simulation scenarios for different instances of the game. In the following the procedure to run the training and setting different values for the arguments is described. 
 
 ###Play beer-game and compare your result with AI!
