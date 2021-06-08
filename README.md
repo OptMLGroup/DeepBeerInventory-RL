@@ -110,8 +110,22 @@ Setting `config.ifsaveHistInterval=True`, activate saving of trajectory of the r
 If you used this code for your experiments or found it helpful, consider citing the following paper:
 
 	@article{oroojlooyjadid2017deep,
-	  title={A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization},
-	  author={Oroojlooyjadid, Afshin and Nazari, MohammadReza and Snyder, Lawrence and Tak{\'a}{\v{c}}, Martin},
-	  journal={MSOM},
-	  year={2020}
+	title={A Deep Q-Network for the Beer Game: Deep Reinforcement Learning for Inventory Optimization},
+	author={Oroojlooyjadid, Afshin and Nazari, MohammadReza and Snyder, Lawrence and Tak{\'a}{\v{c}}, Martin},
+	journal = {Manufacturing \& Service Operations Management},
+	volume = {0},
+	number = {0},
+	pages = {null},
+	year = {0},
+	doi = {10.1287/msom.2020.0939},
+
+	URL = { 
+		https://doi.org/10.1287/msom.2020.0939
+
+	},
+	eprint = { 
+		https://doi.org/10.1287/msom.2020.0939
+
+	}
+	  year={2021}
 	}
